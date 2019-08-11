@@ -38,7 +38,6 @@ def reg_server_views(request):
 
       return HttpResponse("用户名已存在!!")
   else:
-
       try:
         Accountinfo.objects.create(username=dic['username'],password=dic['password'],email=dic['email'])
         Basicinfo.objects.create(gender=dic['gender'],
