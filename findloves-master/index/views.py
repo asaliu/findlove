@@ -88,15 +88,20 @@ def login_check(request):
         user = Accountinfo.objects.filter(username= username)
         user = user[0]
 
-        if user:
-            if password == user.password:
-                result = '1'
-            else:
-                result= '2'
-        else:
-            result = '2'
+        if not user:
+            result ={'code':203,'error':'the username or password is wrong!'}
+            return JsonResponse(result)
 
-        return HttpResponse(result)
+        p_m = hashlib.sha256()
+        p_m.update(password.encode())
+        p_m=p_m.hexdigest()
+
+        if p_m!= user.password:
+            result={'code':204,'error':'the username or password is wrong!'}
+            return JsonResponse(result)
+        token = make_token(username)
+        result = {'code': 200, 'username': username, 'data': {'token': token.decode()}}
+        return JsonResponse(result)
 
 def usercenter(request):
 

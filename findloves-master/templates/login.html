@@ -182,29 +182,32 @@ $(function(){
 			data: {loginname:$_loginname, password:$_password},
 			dataType: "json",
 			success: function($data) {
-			    console.log($data)
+			    console.log($data.code)
 				<!--$json = eval($data);-->
 				<!--$response = $json.response;-->
 				<!--$result = $json.result;-->
-				if ($data == "1") {
-					<!--window.location.href = $forward;-->
-					<!--window.location.href = "home.html";-->
+				if ($data.code ==200) {
+					window.localStorage.setItem('dnblog_token', $data.data.token);
+                    window.localStorage.setItem('dnblog_user', $data.username);
 					alert("登录成功!");
 					window.location = "/usercenter";
 				}
-				else if ($data == "2") {
+				else {
+						alert($data.error);
+					}
+				/*else if ($data == "2") {
 					<!--window.top.location.href = $result;-->
 					alert("登录失败，请检查帐号和密码");
 					window.location = "/login";
-				}
-				else {
+				}*/
+				/*else {
 					if ($result.length > 0) {
 						alert($result);
 					}
 					else {
 						alert("登录失败，请检查帐号和密码");
 					}
-				}
+				}*/
 			},
 			error: function() {
 				alert("登录失败，请检查帐号和密码");
