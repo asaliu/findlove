@@ -42,23 +42,30 @@ var _ROOT_PATH = "index.html";
         homepage:$("#homepage").val(),
         idnumber:$("#idnumber").val(),
       }
-      //将params转换为JSON串
-      var str = JSON.stringify(params);
-      xhr.open("get","/reg-server?params="+str,true);
-      xhr.onreadystatechange = function(){
-        if(xhr.readyState==4 && xhr.status==200){
-          <!--alert(xhr.responseText);-->
-          if(xhr.responseText == '注册成功'){
-            alert(xhr.responseText);
-            window.location = '/login';
-          }else{
-            alert(xhr.responseText);
-            window.location = '/reg';
-          }
 
+        $.ajax({
+        // 请求方式
+        type:"post",
+        // contentType
+        contentType:"application/json",
+        // dataType
+        dataType:"json",
+        // url
+        url:"http://127.0.0.1:8000/reg-server/",
+        // 把JS的对象或数组序列化一个json 字符串
+        data:JSON.stringify(params),
+        // result 为请求的返回结果对象
+        success:function (result) {
+            if (200 == result.code){
+                //window.localStorage.setItem('dnblog_token', result.data.token):
+                //window.localStorage.setItem('dnblog_user', result.username)
+                alert("注册成功")
+
+            }else{
+                alert(result.error)
+            }
         }
-      }
-      xhr.send(null);
+    });
     });
   })
 </script>

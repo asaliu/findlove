@@ -1,6 +1,6 @@
 import json
 
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from index.models import Accountinfo
 from index.models import Basicinfo
@@ -30,34 +30,35 @@ def safety(request):
     return render(request,'safety.html')
 
 def reg_server_views(request):
-  params = request.GET['params']
+  json_object= request.body
   # 将params转换成Python字典
-  dic = json.loads(params)
-  username=dic['username']
-  if Accountinfo.objects.filter(username=username):
-
-      return HttpResponse("用户名已存在!!")
-  else:
-      try:
-        Accountinfo.objects.create(username=dic['username'],password=dic['password'],email=dic['email'])
-        Basicinfo.objects.create(gender=dic['gender'],
-                                 ageday=dic['ageday'],
-                                 ageyear=dic['ageyear'],
-                                 agemonth=dic['agemonth'],
-                                 marrystat=dic['marrystat'],
-                                 education=dic['education'],
-                                 height=dic['height'],
-                                 weight=dic['weight'],
-                                 province=dic['province'],
-                                 lovesort=dic['lovesort'],
-                                 qq=dic['qq'],
-                                 homepage=dic['homepage'],
-                                 idnumber=dic['idnumber'])
-        return HttpResponse("注册成功")
-
-      except Exception as ex:
-        print(ex)
-        return HttpResponse("注册失败")
+  json_str= json.loads(json_object)
+  username=json_str['username']
+  return JsonResponse({'code':200})
+  # if Accountinfo.objects.filter(username=username):
+  #
+  #     return HttpResponse("用户名已存在!!")
+  # else:
+  #     try:
+  #       Accountinfo.objects.create(username=json_str['username'],password=json_str['password'],email=json_str['email'])
+  #       Basicinfo.objects.create(gender=json_str['gender'],
+  #                                ageday=json_str['ageday'],
+  #                                ageyear=json_str['ageyear'],
+  #                                agemonth=json_str['agemonth'],
+  #                                marrystat=json_str['marrystat'],
+  #                                education=json_str['education'],
+  #                                height=json_str['height'],
+  #                                weight=json_str['weight'],
+  #                                province=json_str['province'],
+  #                                lovesort=json_str['lovesort'],
+  #                                qq=json_str['qq'],
+  #                                homepage=json_str['homepage'],
+  #                                idnumber=json_str['idnumber'])
+  #       return HttpResponse("注册成功")
+  #
+  #     except Exception as ex:
+  #       print(ex)
+  #       return HttpResponse("注册失败")
 
 def login_check(request):
     if request.method == 'POST':
