@@ -1,8 +1,11 @@
+import hashlib
 import json
+import time
 
+import jwt
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
-from index.models import Accountinfo
+from .models import Accountinfo
 from index.models import Basicinfo
 
 # Create your views here.
@@ -30,35 +33,53 @@ def safety(request):
     return render(request,'safety.html')
 
 def reg_server_views(request):
-  json_object= request.body
-  # 将params转换成Python字典
-  json_str= json.loads(json_object)
-  username=json_str['username']
-  return JsonResponse({'code':200})
-  # if Accountinfo.objects.filter(username=username):
-  #
-  #     return HttpResponse("用户名已存在!!")
-  # else:
-  #     try:
-  #       Accountinfo.objects.create(username=json_str['username'],password=json_str['password'],email=json_str['email'])
-  #       Basicinfo.objects.create(gender=json_str['gender'],
-  #                                ageday=json_str['ageday'],
-  #                                ageyear=json_str['ageyear'],
-  #                                agemonth=json_str['agemonth'],
-  #                                marrystat=json_str['marrystat'],
-  #                                education=json_str['education'],
-  #                                height=json_str['height'],
-  #                                weight=json_str['weight'],
-  #                                province=json_str['province'],
-  #                                lovesort=json_str['lovesort'],
-  #                                qq=json_str['qq'],
-  #                                homepage=json_str['homepage'],
-  #                                idnumber=json_str['idnumber'])
-  #       return HttpResponse("注册成功")
-  #
-  #     except Exception as ex:
-  #       print(ex)
-  #       return HttpResponse("注册失败")
+    if request.method=='POST':
+        json_object = request.body
+        # 将params转换成Python字典
+        json_str = json.loads(json_object)
+
+        username = json_str['username']
+
+        if Accountinfo.objects.filter(username=username):
+
+            result = {'code': 201, 'error': 'the username is used!'}
+            return JsonResponse(result)
+
+
+        else:
+            p_m = hashlib.sha256()
+            password = json_str['password']
+            p_m.update(password.encode())
+            try:
+                Accountinfo.objects.create(username=username, password=p_m.hexdigest(),
+                                       email=json_str['email'])
+            # except Exception as e:
+            #     result={'code':202,'error':'failed'}
+            #     return JsonResponse(result)
+                Basicinfo.objects.create(gender=json_str['gender'],
+                                     ageday=json_str['ageday'],
+                                     ageyear=json_str['ageyear'],
+                                     agemonth=json_str['agemonth'],
+                                     marrystat=json_str['marrystat'],
+                                     education=json_str['education'],
+                                     height=json_str['height'],
+                                     weight=json_str['weight'],
+                                     province=json_str['province'],
+                                     lovesort=json_str['lovesort'],
+                                     qq=json_str['qq'],
+                                     homepage=json_str['homepage'],
+                                     idnumber=json_str['idnumber'])
+
+
+            except Exception as ex:
+                result={'code':202,'error':'the system is busy!'}
+                return JsonResponse(result)
+            token = make_token(username)
+            result = {'code': 200, 'username': username, 'data': {'token': token.decode()}}
+            return JsonResponse(result)
+
+
+
 
 def login_check(request):
     if request.method == 'POST':
@@ -81,3 +102,14 @@ def usercenter(request):
 
     return render(request,'usercenter.html')
 
+def make_token(username,expire=3600*24):
+    """
+
+    :param username:
+    :param expire:
+    :return:
+    """
+    key='123456'
+    now=time.time()
+    data={'username':username,'exp':int(now+expire)}
+    return jwt.encode(data,key,algorithm='HS256')

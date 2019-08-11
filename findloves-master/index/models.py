@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Accountinfo(models.Model):
     username=models.CharField('用户名',max_length=30)
-    password=models.CharField('登录密码',max_length=30)
+    password=models.CharField('登录密码',max_length=70)
     email=models.EmailField('登录邮箱',max_length=40)
 
 class Basicinfo(models.Model):

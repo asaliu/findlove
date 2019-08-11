@@ -57,9 +57,9 @@ var _ROOT_PATH = "index.html";
         // result 为请求的返回结果对象
         success:function (result) {
             if (200 == result.code){
-                //window.localStorage.setItem('dnblog_token', result.data.token):
-                //window.localStorage.setItem('dnblog_user', result.username)
-                alert("注册成功")
+                window.localStorage.setItem('dnblog_token', result.data.token);
+                window.localStorage.setItem('dnblog_user', result.username);
+                alert("注册成功");
 
             }else{
                 alert(result.error)
