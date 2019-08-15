@@ -14,5 +14,5 @@ urlpatterns = [
     url(r'^case/$',views.case),
     url(r'^safety/$',views.safety),
     url(r'^login/check/$',views.login_check),
-    url(r'^usercenter/$',views.usercenter),
+    url(r'^usercenter/(?P<username>[\w]+)$',views.usercenter),
 ]

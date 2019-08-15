@@ -190,7 +190,7 @@ $(function(){
 					window.localStorage.setItem('dnblog_token', $data.data.token);
                     window.localStorage.setItem('dnblog_user', $data.username);
 					alert("登录成功!");
-					window.location = "/usercenter";
+					window.location = "/usercenter"+"/"+$data.username;
 				}
 				else {
 						alert($data.error);

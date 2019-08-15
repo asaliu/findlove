@@ -7,7 +7,7 @@ class Accountinfo(models.Model):
     email=models.EmailField('登录邮箱',max_length=40)
 
 class Basicinfo(models.Model):
-    uid = models.ForeignKey('Accountinfo', on_delete=models.CASCADE, null=True)
+    uid = models.ForeignKey('Accountinfo', on_delete=models.CASCADE)
     gender=models.CharField('性别',max_length=5)
     ageday=models.IntegerField('天')
     ageyear=models.IntegerField('年')

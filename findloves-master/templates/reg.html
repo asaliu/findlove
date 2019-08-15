@@ -60,6 +60,7 @@ var _ROOT_PATH = "index.html";
                 window.localStorage.setItem('dnblog_token', result.data.token);
                 window.localStorage.setItem('dnblog_user', result.username);
                 alert("注册成功");
+                window.location = "/login";
 
             }else{
                 alert(result.error)

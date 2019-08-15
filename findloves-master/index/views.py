@@ -53,10 +53,15 @@ def reg_server_views(request):
             try:
                 Accountinfo.objects.create(username=username, password=p_m.hexdigest(),
                                        email=json_str['email'])
+
+                id = Accountinfo.objects.get(username=username)
+
             # except Exception as e:
             #     result={'code':202,'error':'failed'}
             #     return JsonResponse(result)
-                Basicinfo.objects.create(gender=json_str['gender'],
+                Basicinfo.objects.create(
+                                    uid = id,
+                                    gender=json_str['gender'],
                                      ageday=json_str['ageday'],
                                      ageyear=json_str['ageyear'],
                                      agemonth=json_str['agemonth'],
@@ -103,9 +108,29 @@ def login_check(request):
         result = {'code': 200, 'username': username, 'data': {'token': token.decode()}}
         return JsonResponse(result)
 
-def usercenter(request):
+def usercenter(request,username=None):
+    if request.method == 'GET':
+        users1 = Accountinfo.objects.filter(username=username)
+        user1 = users1[0]
+        username = user1.username
+        id = user1.id
+        users = Basicinfo.objects.filter(uid=id)
+        user = users[0]
+        gender = user.gender
+        ageday = user.ageday
+        ageyear = user.ageyear
+        agemonth = user.agemonth
+        marrystat = user.marrystat
+        education = user.education
+        height = user.height
+        weight = user.weight
+        province = user.province
+        lovesort = user.lovesort
 
-    return render(request,'usercenter.html')
+        qq = user.qq
+        homepage = user.homepage
+        idnumber = user.idnumber
+    return render(request,'usercenter.html',locals())
 
 def make_token(username,expire=3600*24):
     """
